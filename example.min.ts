@@ -1,27 +1,3 @@
-# deno-shebang
-
-Universally self-executable TypeScript/JavaScript file.
-
-Uses [deno](https://deno.land/), even if deno is not installed.
-
-##  Requirements
-
-- `/bin/sh` a.k.a. Korn Shell
-- `unzip`
-- either `curl` or `wget`
-
-## Copy-paste shebang file header
-
-Copy/paste this into the beginning of your TypeScript file:
-
-```sh
-#!/bin/sh
-/* 2>/dev/null;exec deno run --allow-all --unstable "$0" "$@";*/
-```
-
-Or, if you prefer it legible:
-
-```sh
 #!/bin/sh
 /* 2>/dev/null; set -e
 
@@ -74,8 +50,5 @@ ensure_deno_installed(){
 ensure_deno_installed
 exec deno run ${DENO_ARGS} "$0" "$@"
 */
-```
 
-## Complete example
-
-See [example.ts](example.ts).
+console.log(`🦕: This is deno ${Deno.version.deno}.`)
