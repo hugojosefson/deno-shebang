@@ -32,7 +32,7 @@ ensure_deno_installed(){
   export PATH="${DENO_RANGE_DIR}:${PATH}"
 
   [ -x "${DENO_RANGE_DIR}/deno" ] && return
-  is_deno_version_satisfied && return
+  is_any_deno_installed && is_deno_version_satisfied && ([ -L "${DENO_RANGE_DIR}/deno" ] || ln -s "${DEFAULT_DENO}" "${DENO_RANGE_DIR}/deno") && return
 
   DENO_VERSION="$(get_satisfying_version)"
   DENO_INSTALL="$(get_tmp_dir)/deno-${DENO_VERSION}"
