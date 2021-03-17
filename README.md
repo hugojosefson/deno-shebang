@@ -8,7 +8,7 @@ Uses [deno](https://deno.land/), even if deno is not installed.
 
 - `/bin/sh` a.k.a. Korn Shell
 - `unzip`
-- either `curl` or `wget`
+- `curl`
 
 ## Copy-paste shebang file header
 
