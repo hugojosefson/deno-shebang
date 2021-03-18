@@ -1,8 +1,10 @@
 #!/bin/sh
-/* 2>/dev/null; set -e
+/* 2>/dev/null
 
 DENO_VERSION_RANGE="^1.8"
-# DENO_ARGS="--allow-all --unstable"
+# DENO_RUN_ARGS="--allow-all --unstable"  # <-- depending on what you need
+
+set -e
 
 DENO_VERSION_RANGE_URL_ENCODED="$(expr "$(echo "${DENO_VERSION_RANGE}" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "")" : '..\(.*\)...')"
 DEFAULT_DENO="$(command -v deno || true)"
@@ -52,8 +54,8 @@ ensure_deno_installed(){
 
 ensure_deno_installed
 
-is_run_from_file && exec deno run ${DENO_ARGS} "$0" "$@"
-exec deno run ${DENO_ARGS} - "$@" <<'//🔚'
+is_run_from_file && exec deno run ${DENO_RUN_ARGS} "$0" "$@"
+exec deno run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
 //*/
 
 console.log(`This 🦕 is deno ${Deno.version.deno}, called with args:\n${JSON.stringify(Deno.args, null, 2)}`)
