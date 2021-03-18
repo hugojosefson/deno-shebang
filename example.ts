@@ -13,6 +13,12 @@ get_tmp_dir(){
   dirname "${tmp_tmp_dir}"
 }
 
+is_run_from_file(){
+  me="$(command -v "$0" || true)"
+  ! [ -z $me ] && [ -r $me ] && [ "$(head -c 3 "$me")" = '#!/' ] && [ "$(head -c 24 "$me")" = '#!/bin/sh
+/* 2>/dev/null' ]
+}
+
 is_any_deno_installed() {
   ! [ -z $DEFAULT_DENO ]
 }
@@ -45,10 +51,12 @@ ensure_deno_installed(){
 }
 
 ensure_deno_installed
+
+is_run_from_file && exec deno run ${DENO_ARGS} "$0" "$@"
 exec deno run ${DENO_ARGS} - "$@" <<'//🔚'
 //*/
 
 console.log(`This 🦕 is deno ${Deno.version.deno}, called with args:\n${JSON.stringify(Deno.args, null, 2)}`)
+
 const stdin = new TextDecoder().decode(await Deno.readAll(Deno.stdin));
 console.log(JSON.stringify({stdin}, null, 2))
-//🔚
