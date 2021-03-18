@@ -45,7 +45,10 @@ ensure_deno_installed(){
 }
 
 ensure_deno_installed
-exec deno run ${DENO_ARGS} "$0" "$@"
-*/
+exec deno run ${DENO_ARGS} - "$@" <<'//🔚'
+//*/
 
-console.log(`🦕: This is deno ${Deno.version.deno}.`)
+console.log(`This 🦕 is deno ${Deno.version.deno}, called with args:\n${JSON.stringify(Deno.args, null, 2)}`)
+const stdin = new TextDecoder().decode(await Deno.readAll(Deno.stdin));
+console.log(JSON.stringify({stdin}, null, 2))
+//🔚
