@@ -46,7 +46,7 @@ the extension, or name it something else.
 ## Configuration
 
 In `DENO_VERSION_RANGE`, you can change to whatever
-[semver](https://semver.org/) version of the
+[semver](https://semver.org/) range of the
 [Deno releases](https://github.com/denoland/deno/releases) your script
 expects.
 
