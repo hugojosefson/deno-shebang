@@ -2,10 +2,12 @@
 
 Make any `.ts` or `.js` file truly self-executable.
 
-Uses locally installed [deno](https://deno.land/) if found and satisfies
-the required version. If not, downloads correct version to a temp
-directory and runs the script directly. Next time, it can use the same
-downloaded `deno` quickly.
+Uses any locally installed [deno](https://deno.land/) if it can find it,
+and if it satisfies the required version.
+
+Otherwise, downloads correct version to a temp directory and runs the
+script directly using that. Next time, it can use the same downloaded
+`deno` quickly.
 
 ## Requirements
 
@@ -14,7 +16,6 @@ downloaded `deno` quickly.
 - `curl`
 
 ## How to use
-
 
 ### Step 1: Copy-paste shebang file header
 
