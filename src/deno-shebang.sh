@@ -4,6 +4,7 @@
 DENO_VERSION_RANGE="^1.8"
 # DENO_RUN_ARGS="--allow-all --unstable"  # <-- depending on what you need
 
+# Via https://github.com/hugojosefson/deno-shebang CC BY 4.0
 set -e
 
 DENO_VERSION_RANGE_URL_ENCODED="$(expr "$(echo "${DENO_VERSION_RANGE}" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "")" : '..\(.*\)...')"
