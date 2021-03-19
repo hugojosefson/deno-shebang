@@ -116,7 +116,8 @@ href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
 When you copy-paste the shebang two-liner, the license applies only to
 that, and not anything else in your files. It already contains all the
 details for compliance, wherever you paste it, so there is no need for
-additional mentions, comments, or LICENSE files.
+additional mentions, comments, nor LICENSE files. You are free to
+license your work however you like, even commercially.
 
-It does not make any claim to any other code in your files. As long as
-you copy-paste the shebang as-is, you're fine.
+The two-line shebang and its license make no claim to any other code in
+your files. As long as you copy-paste the shebang as-is, you're fine.
