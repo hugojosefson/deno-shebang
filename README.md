@@ -1,12 +1,18 @@
 # deno-shebang
 
-Make TypeScript/JavaScript files truly self-executable.
+Make TypeScript/JavaScript files truly standalone self-executable.
 
 ## What?!
 
-By putting this two line
+Put this two line
 [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header in a
-Deno-compatible `.ts` or `.js` file, you make it self-executable.
+Deno-compatible `.ts` or `.js` file, to make it standalone
+self-executable:
+
+```typescript
+#!/bin/sh
+// 2>/dev/null;DENO_VERSION_RANGE="^1.8";DENO_RUN_ARGS="";: "Via https://github.com/hugojosefson/deno-shebang CC BY 4.0";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp -d)";rmdir "${d}";dirname "${d}";};f(){ m="$(command -v "$0"||true)";l="/* 2>/dev/null";! [ -z $m ]&&[ -r $m ]&&[ "$(head -c3 "$m")" = '#!/' ]&&(read x && read y &&[ "$x" = "#!/bin/sh" ]&&[ "$l" != "${y%"$l"*}" ])<"$m";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.3.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://api.mattandre.ws/semver/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;curl -fsSL https://deno.land/x/install/install.sh|DENO_INSTALL="$i" sh -s "$v">/dev/null 2>&1;};e;f&&exec deno run $A "$0" "$@";exec deno run $A - "$@"<<'//🔚'
+```
 
 It automatically downloads a correct version of the single
 [deno](https://deno.land/) executable if needed, to a temp directory,
@@ -17,13 +23,12 @@ satisfactory, it uses that instead **without downloading deno at all**.
 For example from a previous run, or from an otherwise installed `deno`
 by the user.
 
-
 ## Requirements
 
-These are the only things you need to run a script that has this
+These are the only things you need, to run a script that has this
 shebang:
 
-- `/bin/sh` a.k.a. Korn Shell, POSIX shell
+- `/bin/sh` a.k.a. Bourne shell, POSIX shell
 - `curl`
 - `unzip`
 
