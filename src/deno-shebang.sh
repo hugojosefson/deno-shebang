@@ -53,7 +53,7 @@ ensure_deno_installed(){
   is_deno_version_satisfied && return
 
   export DENO_INSTALL
-  curl -fsSL https://deno.land/x/install/install.sh | sh -s "${DENO_VERSION}" >/dev/null 2>&1
+  curl -fsSL https://deno.land/x/install/install.sh | sh -s "${DENO_VERSION}" >&2
 }
 
 ensure_deno_installed
