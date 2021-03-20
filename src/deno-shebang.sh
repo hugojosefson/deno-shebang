@@ -1,5 +1,5 @@
 #!/bin/sh
-// /* 2>/dev/null
+/* 2>/dev/null
 
 DENO_VERSION_RANGE="^1.8"
 # DENO_RUN_ARGS="--allow-all --unstable"  # <-- depending on what you need
