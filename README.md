@@ -1,19 +1,33 @@
 # deno-shebang
 
-Make any `.ts` or `.js` file truly self-executable.
+Make TypeScript/JavaScript files truly self-executable.
 
-Uses any locally installed [deno](https://deno.land/) if it can find it,
-and if it satisfies the required version.
+## What?!
 
-Otherwise, downloads correct version to a temp directory and runs the
-script directly using that. Next time, it can use the same downloaded
-`deno` quickly.
+By putting this two line
+[shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header in a
+Deno-compatible `.ts` or `.js` file, you make it self-executable.
+
+It automatically downloads a correct version of the single
+[deno](https://deno.land/) executable if needed, to a temp directory,
+and runs the script directly using that.
+
+However, if it finds `deno` already installed, and its version is
+satisfactory, it uses that instead **without downloading deno at all**.
+For example from a previous run, or from an otherwise installed `deno`
+by the user.
+
 
 ## Requirements
 
+These are the only things you need to run a script that has this
+shebang:
+
 - `/bin/sh` a.k.a. Korn Shell, POSIX shell
-- `unzip`
 - `curl`
+- `unzip`
+
+As you can see, ~~deno~~ needs NOT be installed.
 
 ## How to use
 
