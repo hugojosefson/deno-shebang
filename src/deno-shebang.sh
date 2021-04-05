@@ -11,9 +11,9 @@ DENO_VERSION_RANGE_URL_ENCODED="$(expr "$(echo "${DENO_VERSION_RANGE}" | curl -G
 DEFAULT_DENO="$(command -v deno || true)"
 
 get_tmp_dir(){
-  tmp_tmp_dir="$(mktemp -d)"
-  rmdir "${tmp_tmp_dir}"
-  dirname "${tmp_tmp_dir}"
+  tmp_tmp_file="$(mktemp)"
+  rm "${tmp_tmp_file}"
+  dirname "${tmp_tmp_file}"
 }
 
 is_run_from_file(){
