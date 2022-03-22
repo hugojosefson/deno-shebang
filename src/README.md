@@ -123,18 +123,4 @@ See [example.min.ts](example.min.ts) and [example.ts](example.ts).
 
 ## License
 
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img
-alt="Creative Commons License" style="border-width:0"
-src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
-
-This project is licensed under <a rel="license"
-href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
-
-When you copy-paste the shebang two-liner, the license applies only to
-that, and not anything else in your files. It already contains all the
-details for compliance, wherever you paste it, so there is no need for
-additional mentions, comments, nor LICENSE files. You are free to
-license your work however you like, even commercially.
-
-The two-line shebang and its license make no claim to any other code in
-your files. As long as you copy-paste the shebang as-is, you're fine.
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/hugojosefson/deno-shebang">deno-shebang</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.hugojosefson.com">Hugo Josefson</a> is marked with <a href="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC0 1.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"></a></p>
