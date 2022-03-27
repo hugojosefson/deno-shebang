@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.8"
+DENO_VERSION_RANGE="^1.20"
 # DENO_RUN_ARGS="--allow-all --unstable"  # <-- depending on what you need
 
 set -e
@@ -30,7 +30,7 @@ is_any_deno_installed() {
 
 is_deno_version_satisfied(){
   is_any_deno_installed && [ -x "${DENO_RANGE_DIR}/deno" ] && [ "${DENO_RANGE_DIR}/deno" = "${DEFAULT_DENO}" ] && return
-  deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.3.0/mod.ts';Deno.exit(e(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
+  deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
 }
 
 get_satisfying_version(){
@@ -52,7 +52,7 @@ ensure_deno_installed(){
   is_deno_version_satisfied && return
 
   export DENO_INSTALL
-  curl -fsSL https://deno.land/x/install/install.sh | sh -s "${DENO_VERSION}" >&2
+  curl -fsSL https://deno.land/install.sh | sh -s "${DENO_VERSION}" >&2
 }
 
 ensure_deno_installed
