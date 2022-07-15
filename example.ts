@@ -2,7 +2,8 @@
 /* 2>/dev/null
 
 DENO_VERSION_RANGE="^1.20"
-# DENO_RUN_ARGS="--allow-all --unstable"  # <-- depending on what you need
+DENO_RUN_ARGS="--quiet"
+# DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
 set -e
 
@@ -52,7 +53,12 @@ ensure_deno_installed(){
   is_deno_version_satisfied && return
 
   export DENO_INSTALL
-  curl -fsSL https://deno.land/install.sh | sh -s "${DENO_VERSION}" >&2
+  (
+    if [ "${DENO_RUN_ARGS#*-q}" != "${DENO_RUN_ARGS}" ]; then
+      exec 2>/dev/null
+    fi
+    curl -fsSL https://deno.land/install.sh | sh -s ${DENO_INSTALL_ARGS} "${DENO_VERSION}" >&2
+  )
 }
 
 ensure_deno_installed

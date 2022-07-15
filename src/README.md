@@ -11,6 +11,7 @@ self-executable:
 
 ```typescript
 '@@src/deno-shebang.min.sh'
+
 ```
 
 It automatically downloads a correct version of the single
@@ -41,6 +42,7 @@ Copy/paste this two-liner, into the beginning of your TypeScript file:
 
 ```typescript
 '@@src/deno-shebang.min.sh'
+
 ```
 
 ### Step 2: `chmod` it
