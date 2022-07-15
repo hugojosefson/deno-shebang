@@ -28,4 +28,9 @@ test/import-test.sh: src/deno-shebang.min.sh test/import-test.ts
 	@cat src/deno-shebang.min.sh test/import-test.ts > test/import-test.sh
 	@chmod +x test/import-test.sh
 
-.PHONY: all clean test
+docker-test:
+	docker build -t deno-shebang-test .
+	docker run --rm -i -v "/var/run/docker.sock:/var/run/docker.sock:Z" deno-shebang-test make --always-make
+	@echo "Tests were successful inside Docker."
+
+.PHONY: all clean test docker-test
