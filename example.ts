@@ -35,7 +35,7 @@ is_deno_version_satisfied(){
 }
 
 get_satisfying_version(){
-  curl -sSfL "https://api.mattandre.ws/semver/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
+  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
 }
 
 ensure_deno_installed(){
