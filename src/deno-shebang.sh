@@ -54,5 +54,5 @@ ensure_deno_installed(){
 
 ensure_deno_installed
 
-exec deno run ${DENO_RUN_ARGS} "$0" "$@"
+exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
 //*/

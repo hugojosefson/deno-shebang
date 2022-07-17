@@ -63,6 +63,6 @@ ensure_deno_installed(){
 
 ensure_deno_installed
 
-is_run_from_file && exec deno run ${DENO_RUN_ARGS} "$0" "$@"
-exec deno run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
+is_run_from_file && exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
+exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
 //*/
