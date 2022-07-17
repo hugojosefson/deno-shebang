@@ -16,15 +16,6 @@ get_tmp_dir(){
   dirname "${tmp_tmp_file}"
 }
 
-is_run_from_file(){
-  line2="/* 2>/dev/null"
-  me="$(command -v "$0" || true)"
-  ! [ -z $me ] \
-  && [ -r $me ] \
-  && [ "$(head -c 3 "$me")" = '#!/' ] \
-  && (read x && read y && [ "$x" = "#!/bin/sh" ] && [ "$line2" != "${y%"$line2"*}" ]) < "${me}"
-}
-
 is_any_deno_installed() {
   ! [ -z $DEFAULT_DENO ]
 }
@@ -63,6 +54,5 @@ ensure_deno_installed(){
 
 ensure_deno_installed
 
-is_run_from_file && exec deno run ${DENO_RUN_ARGS} "$0" "$@"
-exec deno run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
+exec deno run ${DENO_RUN_ARGS} "$0" "$@"
 //*/

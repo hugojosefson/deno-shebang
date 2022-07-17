@@ -65,7 +65,7 @@ the extension, or name it something else.
 ## Configuration
 
 In `DENO_VERSION_RANGE`, you can change to whatever
-[semver](https://semver.org/) range of the
+[Semantic Versioning range](https://devhints.io/semver) of the
 [Deno releases](https://github.com/denoland/deno/releases) your script
 expects.
 
@@ -95,15 +95,22 @@ Your script is free to access command-line arguments.
 
 ### curl | sh
 
-If you want, you can run the script directly from its server using
+There is an extended variant of this shebang, which will also let you pipe your script into `sh`:
+
+```typescript
+'@@src/deno-shebang-piped.min.sh'
+
+```
+
+Using this, you can run both run the script normally from a file, or directly from the internet using
 `curl` and `sh`:
 
 ```sh
 curl -s https://example.com/myscript.ts | sh
 ```
 
-However, then you can't read from `stdin` like above. That's because
-`deno` will be reading the script from `stdin`.
+However, piping the script into `sh`, you can no longer read from `stdin` like above. That's because
+`deno` will be reading the script from `stdin` instead.
 
 ### curl | sh + arguments
 
@@ -116,12 +123,17 @@ curl -s https://example.com/myscript.ts | sh -s -- -i inputfile.txt -o outputfil
 
 ## Full source code
 
-You can view the full un-minified source code in
-[src/deno-shebang.sh](src/deno-shebang.sh).
+You can view the full un-minified source code in:
+
+- [src/deno-shebang.sh](src/deno-shebang.sh)
+- [src/deno-shebang-piped.sh](src/deno-shebang-piped.sh)
 
 ## Complete examples
 
-See [example.min.ts](example.min.ts) and [example.ts](example.ts).
+- [example.ts](example.ts)
+- [example.min.ts](example.min.ts)
+- [example-piped.ts](example-piped.ts)
+- [example-piped.min.ts](example-piped.min.ts)
 
 ## License
 
