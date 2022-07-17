@@ -4,30 +4,25 @@ Make TypeScript/JavaScript files truly standalone self-executable.
 
 ## What?!
 
-Put this two line
-[shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header in a
-Deno-compatible `.ts` or `.js` file, to make it standalone
-self-executable:
+Put this two line [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header
+in a Deno-compatible `.ts` or `.js` file, to make it standalone self-executable:
 
 ```typescript
 #!/bin/sh
-// 2>/dev/null;DENO_VERSION_RANGE="^1.20";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;exec deno run $A "$0" "$@"
-
+// 2>/dev/null;DENO_VERSION_RANGE="^1.23";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;exec deno run $A "$0" "$@"
 ```
 
 It automatically downloads a correct version of the single
-[deno](https://deno.land/) executable if needed, to a temp directory,
-and runs the script directly using that.
+[deno](https://deno.land/) executable if needed, to a temp directory, and runs
+the script directly using that.
 
-However, if it finds `deno` already installed, and its version is
-satisfactory, it uses that instead **without downloading deno at all**.
-For example from a previous run, or from an otherwise installed `deno`
-by the user.
+However, if it finds `deno` already installed, and its version is satisfactory,
+it uses that instead **without downloading deno at all**. For example from a
+previous run, or from an otherwise installed `deno` by the user.
 
 ## Requirements
 
-These are the only things you need, to run a script that has this
-shebang:
+These are the only things you need, to run a script that has this shebang:
 
 - `/bin/sh` a.k.a. Bourne shell, POSIX shell
 - `curl`
@@ -43,8 +38,7 @@ Copy/paste this two-liner, into the beginning of your TypeScript file:
 
 ```typescript
 #!/bin/sh
-// 2>/dev/null;DENO_VERSION_RANGE="^1.20";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;exec deno run $A "$0" "$@"
-
+// 2>/dev/null;DENO_VERSION_RANGE="^1.23";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;exec deno run $A "$0" "$@"
 ```
 
 ### Step 2: `chmod` it
@@ -61,18 +55,17 @@ chmod +x myscript.ts
 ./myscript.ts
 ```
 
-At this point, it doesn't even need to be named `.ts`. You can remove
-the extension, or name it something else.
+At this point, it doesn't even need to be named `.ts`. You can remove the
+extension, or name it something else.
 
 ## Configuration
 
 In `DENO_VERSION_RANGE`, you can change to whatever
 [Semantic Versioning range](https://devhints.io/semver) of the
-[Deno releases](https://github.com/denoland/deno/releases) your script
-expects.
+[Deno releases](https://github.com/denoland/deno/releases) your script expects.
 
-In `DENO_RUN_ARGS`, you may set any additional arguments to `deno run`,
-such as `--allow-read=. --allow-network`.
+In `DENO_RUN_ARGS`, you may set any additional arguments to `deno run`, such as
+`--allow-read=. --allow-network`.
 
 ## Features
 
@@ -97,28 +90,28 @@ Your script is free to access command-line arguments.
 
 ### curl | sh
 
-There is an extended variant of this shebang, which will also let you pipe your script into `sh`:
+There is an extended variant of this shebang, which will also let you pipe your
+script into `sh`:
 
 ```typescript
 #!/bin/sh
-// 2>/dev/null;DENO_VERSION_RANGE="^1.20";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};f(){ m="$(command -v "$0"||true)";l="/* 2>/dev/null";! [ -z $m ]&&[ -r $m ]&&[ "$(head -c3 "$m")" = '#!/' ]&&(read x && read y &&[ "$x" = "#!/bin/sh" ]&&[ "$l" != "${y%"$l"*}" ])<"$m";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;f&&exec deno run $A "$0" "$@";exec deno run $A - "$@"<<'//🔚'
-
+// 2>/dev/null;DENO_VERSION_RANGE="^1.23";DENO_RUN_ARGS="-q";set -e;V="$DENO_VERSION_RANGE";A="$DENO_RUN_ARGS";U="$(expr "$(echo "$V"|curl -Gso/dev/null -w%{url_effective} --data-urlencode @- "")" : '..\(.*\)...')";D="$(command -v deno||true)";t(){ d="$(mktemp)";rm "${d}";dirname "${d}";};f(){ m="$(command -v "$0"||true)";l="/* 2>/dev/null";! [ -z $m ]&&[ -r $m ]&&[ "$(head -c3 "$m")" = '#!/' ]&&(read x && read y &&[ "$x" = "#!/bin/sh" ]&&[ "$l" != "${y%"$l"*}" ])<"$m";};a(){ [ -n $D ];};s(){ a&&[ -x "$R/deno" ]&&[ "$R/deno" = "$D" ]&&return;deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.0/mod.ts';Deno.exit(e(Deno.version.deno,'$V')?0:1);">/dev/null 2>&1;};g(){ curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/$U";};e(){ R="$(t)/deno-range-$V/bin";mkdir -p "$R";export PATH="$R:$PATH";[ -x "$R/deno" ]&&return;a&&s&&([ -L "$R/deno" ]||ln -s "$D" "$R/deno")&&return;v="$(g)";i="$(t)/deno-$v";[ -L "$R/deno" ]||ln -s "$i/bin/deno" "$R/deno";s && return;([ "${A#*-q}" != "$A" ]&&exec 2>/dev/null;curl -fsSL https://deno.land/install.sh|DENO_INSTALL="$i" sh -s $DENO_INSTALL_ARGS "$v">&2);};e;f&&exec deno run $A "$0" "$@";exec deno run $A - "$@"<<'//🔚'
 ```
 
-Using this, you can run both run the script normally from a file, or directly from the internet using
-`curl` and `sh`:
+Using this, you can run both run the script normally from a file, or directly
+from the internet using `curl` and `sh`:
 
 ```sh
 curl -s https://example.com/myscript.ts | sh
 ```
 
-However, piping the script into `sh`, you can no longer read from `stdin` like above. That's because
-`deno` will be reading the script from `stdin` instead.
+However, piping the script into `sh`, you can no longer read from `stdin` like
+above. That's because `deno` will be reading the script from `stdin` instead.
 
 ### curl | sh + arguments
 
-When piping the script through `sh`, you can still use command-line
-arguments. You just have to prefix them to `sh` with `-s --` like this:
+When piping the script through `sh`, you can still use command-line arguments.
+You just have to prefix them to `sh` with `-s --` like this:
 
 ```sh
 curl -s https://example.com/myscript.ts | sh -s -- -i inputfile.txt -o outputfile.txt

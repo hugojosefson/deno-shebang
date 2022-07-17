@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.20"
+DENO_VERSION_RANGE="^1.23"
 DENO_RUN_ARGS="--quiet"
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -66,8 +66,12 @@ ensure_deno_installed
 is_run_from_file && exec deno run ${DENO_RUN_ARGS} "$0" "$@"
 exec deno run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
 //*/
-console.log(`This 🦕 is deno ${Deno.version.deno}, called with args:\n${JSON.stringify(Deno.args, null, 2)}`)
+console.log(
+  `This 🦕 is deno ${Deno.version.deno}, called with args:\n${
+    JSON.stringify(Deno.args, null, 2)
+  }`,
+);
 
 const stdin = new TextDecoder().decode(await Deno.readAll(Deno.stdin));
-console.log(JSON.stringify({stdin}, null, 2))
+console.log(JSON.stringify({ stdin }, null, 2));
 //🔚

@@ -4,29 +4,24 @@ Make TypeScript/JavaScript files truly standalone self-executable.
 
 ## What?!
 
-Put this two line
-[shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header in a
-Deno-compatible `.ts` or `.js` file, to make it standalone
-self-executable:
+Put this two line [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) header
+in a Deno-compatible `.ts` or `.js` file, to make it standalone self-executable:
 
 ```typescript
-'@@src/deno-shebang.min.sh'
-
+"@@src/deno-shebang.min.sh";
 ```
 
 It automatically downloads a correct version of the single
-[deno](https://deno.land/) executable if needed, to a temp directory,
-and runs the script directly using that.
+[deno](https://deno.land/) executable if needed, to a temp directory, and runs
+the script directly using that.
 
-However, if it finds `deno` already installed, and its version is
-satisfactory, it uses that instead **without downloading deno at all**.
-For example from a previous run, or from an otherwise installed `deno`
-by the user.
+However, if it finds `deno` already installed, and its version is satisfactory,
+it uses that instead **without downloading deno at all**. For example from a
+previous run, or from an otherwise installed `deno` by the user.
 
 ## Requirements
 
-These are the only things you need, to run a script that has this
-shebang:
+These are the only things you need, to run a script that has this shebang:
 
 - `/bin/sh` a.k.a. Bourne shell, POSIX shell
 - `curl`
@@ -41,8 +36,7 @@ As you can see, ~~deno~~ needs NOT be installed.
 Copy/paste this two-liner, into the beginning of your TypeScript file:
 
 ```typescript
-'@@src/deno-shebang.min.sh'
-
+"@@src/deno-shebang.min.sh";
 ```
 
 ### Step 2: `chmod` it
@@ -59,18 +53,17 @@ chmod +x myscript.ts
 ./myscript.ts
 ```
 
-At this point, it doesn't even need to be named `.ts`. You can remove
-the extension, or name it something else.
+At this point, it doesn't even need to be named `.ts`. You can remove the
+extension, or name it something else.
 
 ## Configuration
 
 In `DENO_VERSION_RANGE`, you can change to whatever
 [Semantic Versioning range](https://devhints.io/semver) of the
-[Deno releases](https://github.com/denoland/deno/releases) your script
-expects.
+[Deno releases](https://github.com/denoland/deno/releases) your script expects.
 
-In `DENO_RUN_ARGS`, you may set any additional arguments to `deno run`,
-such as `--allow-read=. --allow-network`.
+In `DENO_RUN_ARGS`, you may set any additional arguments to `deno run`, such as
+`--allow-read=. --allow-network`.
 
 ## Features
 
@@ -95,27 +88,27 @@ Your script is free to access command-line arguments.
 
 ### curl | sh
 
-There is an extended variant of this shebang, which will also let you pipe your script into `sh`:
+There is an extended variant of this shebang, which will also let you pipe your
+script into `sh`:
 
 ```typescript
-'@@src/deno-shebang-piped.min.sh'
-
+"@@src/deno-shebang-piped.min.sh";
 ```
 
-Using this, you can run both run the script normally from a file, or directly from the internet using
-`curl` and `sh`:
+Using this, you can run both run the script normally from a file, or directly
+from the internet using `curl` and `sh`:
 
 ```sh
 curl -s https://example.com/myscript.ts | sh
 ```
 
-However, piping the script into `sh`, you can no longer read from `stdin` like above. That's because
-`deno` will be reading the script from `stdin` instead.
+However, piping the script into `sh`, you can no longer read from `stdin` like
+above. That's because `deno` will be reading the script from `stdin` instead.
 
 ### curl | sh + arguments
 
-When piping the script through `sh`, you can still use command-line
-arguments. You just have to prefix them to `sh` with `-s --` like this:
+When piping the script through `sh`, you can still use command-line arguments.
+You just have to prefix them to `sh` with `-s --` like this:
 
 ```sh
 curl -s https://example.com/myscript.ts | sh -s -- -i inputfile.txt -o outputfile.txt
