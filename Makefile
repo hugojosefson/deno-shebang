@@ -42,9 +42,9 @@ README.html: README.md
 	@docker run --rm -i hugojosefson/markdown < README.md > README.html
 
 test: test/import-test.sh test/import-test-piped.sh
-	@[ "$$(./test/import-test.sh)" = "Hello, world!" ]                    # Just run it
 	@cd test && [ "$$(cat import-test-piped.sh | sh)" = "Hello, world!" ] # pipe through sh in correct dir
 	@! (cat ./test/import-test-piped.sh | sh 2>/dev/null)                 # pipe through sh in wrong dir should fail
+	@[ "$$(./test/import-test.sh)" = "Hello, world!" ]                    # Just run it
 	@cd test && [ "$$(./import-test.sh)" = "Hello, world!" ]              # run the script in correct dir
 	@! ./import-test.sh 2>/dev/null                                       # run the script in wrong dir should fail
 
