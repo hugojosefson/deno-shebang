@@ -1,4 +1,4 @@
-all: example.ts example.min.ts example-piped.ts example-piped.min.ts README.md README.html test
+all: example.ts example.min.ts example-piped.ts example-piped.min.ts example example.min example-piped example-piped.min README.md README.html test
 
 clean:
 	@rm -f README.* example* test/import-test.sh
@@ -20,6 +20,18 @@ example-piped.min.ts: src/deno-shebang-piped.min.sh src/example.ts
 	@cat src/deno-shebang-piped.min.sh src/example.ts > example-piped.min.ts
 	@echo "//🔚" >> example-piped.min.ts
 	@chmod +x example-piped.min.ts
+
+example: example.ts
+	@cp example.ts example
+
+example.min: example.min.ts
+	@cp example.min.ts example.min
+
+example-piped: example-piped.ts
+	@cp example-piped.ts example-piped
+
+example-piped.min: example-piped.min.ts
+	@cp example-piped.min.ts example-piped.min
 
 README.md: src/README.md src/deno-shebang.min.sh src/deno-shebang-piped.min.sh
 	@awk 'NR==FNR { a[n++]=$$0; next } /deno-shebang.min.sh/       { for (i=0;i<n;++i) print a[i]; next }1' src/deno-shebang.min.sh       src/README.md   > README.md.1  # This line via https://stackoverflow.com/a/25557287 CC BY-SA 3.0
