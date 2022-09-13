@@ -56,4 +56,13 @@ docker-test:
 update-version-range: .deno-version src/deno-shebang.sh src/deno-shebang.min.sh src/deno-shebang-piped.sh src/deno-shebang-piped.min.sh
 	@sed -E "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" -i src/deno-shebang*.sh
 
-.PHONY: all clean test docker-test update-version-range .deno-version
+maxify:
+	@sed -E 's|;|\n|g' -i src/*.min.sh                                    # Split lines
+
+minify:
+	@sed -zE 's|\n|;|g' -i src/*.min.sh                                   # Join lines
+	@sed -zE 's|^(#![^;]*);|\1\n|' -i src/*.min.sh                        # Add newline after shebang
+	@sed -zE 's|;$$||' -i src/*.min.sh                                    # Remove trailing semicolon
+	@sed -zE 's|\n*$$|\n|' -i src/*.min.sh                                # Ensure exactly 1 newline at end of file
+
+.PHONY: all clean test docker-test update-version-range .deno-version maxify minify
