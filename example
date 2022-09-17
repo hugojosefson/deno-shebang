@@ -11,15 +11,20 @@ has_command() {
   [ -x "$(command -v "$1" 2>&1)" ]
 }
 
+needs_sudo() {
+  [ "$(id -u)" != 0 ]
+}
+
 get_package_installer() {
+  any_sudo="$(needs_sudo && echo sudo)"
   if has_command brew; then
     echo "brew install"
   elif has_command apt; then
-    echo "sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y"
+    echo "${any_sudo} apt update && ${any_sudo} DEBIAN_FRONTEND=noninteractive apt install -y"
   elif has_command yum; then
-    echo "sudo yum install -y"
+    echo "${any_sudo} yum install -y"
   elif has_command pacman; then
-    echo "sudo pacman -yS --noconfirm"
+    echo "${any_sudo} pacman -yS --noconfirm"
   fi
 }
 
