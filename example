@@ -16,7 +16,8 @@ needs_sudo() {
 }
 
 get_package_installer() {
-  any_sudo="$(needs_sudo && echo sudo)"
+  # shellcheck disable=SC2015
+  any_sudo="$(needs_sudo && echo sudo || true)"
   if has_command brew; then
     echo "brew install"
   elif has_command apt; then
