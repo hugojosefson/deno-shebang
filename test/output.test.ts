@@ -96,46 +96,49 @@ Deno.test("docker", async (t) => {
   });
   await runStepsInParallel(
     t,
-    images.map((image) => ({
-      name: image,
-      fn: async (t) => {
-        await t.step({
-          name: `pull`,
-          fn: async () => {
-            await run(["docker", "pull", image]);
-          },
-        });
-
-        const scriptsToTest = scripts.filter((script) =>
-          !script.endsWith(".ts")
-        );
-        await runStepsInParallel(
-          t,
-          scriptsToTest.map((script) => ({
-            name: script,
+    images.map((image) => {
+      return ({
+        name: image,
+        fn: async (t) => {
+          const command = ["docker", "pull", image];
+          await t.step({
+            name: command.join(" "),
             fn: async () => {
-              const actual = await run(
-                [
-                  "docker",
-                  "run",
-                  "--rm",
-                  "-i",
-                  "--init",
-                  "-v",
-                  `${Deno.cwd()}:/app:ro`,
-                  "-w",
-                  "/app",
-                  image,
-                  script,
-                  ...args,
-                ],
-                { stdin },
-              );
-              assertEquals(actual, getExpected(denoVersion));
+              await run(command);
             },
-          })),
-        );
-      },
-    })),
+          });
+
+          const scriptsToTest = scripts.filter((script) =>
+            !script.endsWith(".ts")
+          );
+          await runStepsInParallel(
+            t,
+            scriptsToTest.map((script) => {
+              const command = [
+                "docker",
+                "run",
+                "--rm",
+                "-i",
+                "--init",
+                "-v",
+                `${Deno.cwd()}:/app:ro`,
+                "-w",
+                "/app",
+                image,
+                script,
+                ...args,
+              ];
+              return ({
+                name: command.join(" "),
+                fn: async () => {
+                  const actual = await run(command, { stdin });
+                  assertEquals(actual, getExpected(denoVersion));
+                },
+              });
+            }),
+          );
+        },
+      });
+    }),
   );
 });
