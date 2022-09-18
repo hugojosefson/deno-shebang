@@ -63,6 +63,7 @@ const images = [
   "docker.io/archlinux",
   "docker.io/debian:stable",
   "docker.io/debian:stable-slim",
+  "docker.io/fedora",
   "docker.io/manjarolinux/base",
   "docker.io/ubuntu",
   "quay.io/centos/centos:stream",
