@@ -1,1 +1,1 @@
-export default 'world'
+export default "world";

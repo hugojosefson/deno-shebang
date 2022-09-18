@@ -59,8 +59,11 @@ test/import-test-piped.sh: src/deno-shebang-piped.min.sh test/import-test.ts
 
 docker-test:
 	docker build -t deno-shebang-test .
-	docker run --rm -i -v "/var/run/docker.sock:/var/run/docker.sock:Z" deno-shebang-test make --always-make
-	@echo "Tests were successful inside Docker."
+	docker run --rm -i -v "/var/run/docker.sock:/var/run/docker.sock:Z" deno-shebang-test make --always-make all
+	@echo "'make all' was successful inside Docker."
+
+docker-output-test: ./test/output.test.ts example example.min example.ts example.min.ts
+	@./test/output.test.ts
 
 .deno-version:
 	@curl -sf https://semver-version.deno.dev/api/github/denoland/deno|sed -E 's|^v?([0-9]+.[0-9]+)\.[0-9]+|^\1|' > .deno-version
@@ -77,4 +80,4 @@ minify:
 	@sed -zE 's|;$$||' -i src/*.min.sh                                    # Remove trailing semicolon
 	@sed -zE 's|\n*$$|\n|' -i src/*.min.sh                                # Ensure exactly 1 newline at end of file
 
-.PHONY: all clean test docker-test update-version-range .deno-version maxify minify
+.PHONY: all clean test docker-test docker-output-test update-version-range .deno-version maxify minify

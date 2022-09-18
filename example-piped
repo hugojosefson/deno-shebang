@@ -15,28 +15,31 @@ needs_sudo() {
   [ "$(id -u)" != 0 ]
 }
 
-get_package_installer() {
+get_package_install_command() {
+  package_name="$1"
   # shellcheck disable=SC2015
   any_sudo="$(needs_sudo && echo sudo || true)"
   if has_command brew; then
-    echo "brew install"
+    echo "brew install ${package_name}"
   elif has_command apt; then
-    echo "${any_sudo} apt update && ${any_sudo} DEBIAN_FRONTEND=noninteractive apt install -y"
+    echo "(${any_sudo} apt update && ${any_sudo} DEBIAN_FRONTEND=noninteractive apt install -y ${package_name})"
   elif has_command yum; then
-    echo "${any_sudo} yum install -y"
+    echo "${any_sudo} yum install -y ${package_name}"
   elif has_command pacman; then
-    echo "${any_sudo} pacman -yS --noconfirm"
+    echo "${any_sudo} pacman -yS --noconfirm ${package_name}"
+  elif has_command opkg-install; then
+    echo "${any_sudo} opkg-install ${package_name}"
   fi
 }
 
 install_package() {
   package_name="$1"
-  installer="$(get_package_installer)"
+  installer="$(get_package_install_command "${package_name}")"
   if [ -z "${installer}" ]; then
     echo "Please install '${package_name}' manually, then try again." >&2
     exit 1
   fi
-  eval "set -x; ${installer} ${package_name}; set +x" >&2
+  eval "saved_opts=\"\$(set +o)\"; set -x; ${installer} >&2; set +x; eval \"\${saved_opts}\"" >&2
 }
 
 ensure_command_installed() {
