@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.25"
+DENO_VERSION_RANGE="^1.26"
 DENO_RUN_ARGS="--quiet"
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
