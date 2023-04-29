@@ -1,5 +1,5 @@
 #!/usr/bin/env -S deno test --allow-run --allow-read --allow-net=semver-version.deno.dev --fail-fast --parallel
-import { run } from "https://deno.land/x/run_simple@1.1.0/mod.ts";
+import { run } from "https://deno.land/x/run_simple@1.2.0/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 
 async function fetchText(url: string): Promise<string> {

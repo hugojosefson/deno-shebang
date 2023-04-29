@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.28"
+DENO_VERSION_RANGE="^1.33.1"
 DENO_RUN_ARGS="--quiet"
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -48,8 +48,7 @@ ensure_command_installed() {
   fi
 }
 
-ensure_command_installed curl
-DENO_VERSION_RANGE_URL_ENCODED="$(expr "$(echo "${DENO_VERSION_RANGE}" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "")" : '..\(.*\)...')"
+DENO_VERSION_RANGE_URL_ENCODED="$(echo "${DENO_VERSION_RANGE}" | tr -d '\n' | od -An -tx1 | tr ' ' % | tr -d '\n')"
 DEFAULT_DENO="$(command -v deno || true)"
 
 get_tmp_dir() {
@@ -68,7 +67,7 @@ is_run_from_file(){
 }
 
 is_any_deno_installed() {
-  ! [ -z $DEFAULT_DENO ]
+  [ -n "${DEFAULT_DENO}" ]
 }
 
 is_deno_version_satisfied() {
@@ -77,6 +76,7 @@ is_deno_version_satisfied() {
 }
 
 get_satisfying_version() {
+  ensure_command_installed curl
   curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
 }
 
@@ -95,6 +95,7 @@ ensure_deno_installed() {
   is_deno_version_satisfied && return
 
   ensure_command_installed unzip
+  ensure_command_installed curl
 
   export DENO_INSTALL
   (

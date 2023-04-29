@@ -66,7 +66,7 @@ docker-output-test: ./test/output.test.ts example example.min example.ts example
 	@./test/output.test.ts
 
 .deno-version:
-	@curl -sf https://semver-version.deno.dev/api/github/denoland/deno|sed -E 's|^v?([0-9]+.[0-9]+)\.[0-9]+|^\1|' > .deno-version
+	@curl -sf https://semver-version.deno.dev/api/github/denoland/deno | tr v '^' > .deno-version
 
 update-version-range: .deno-version src/deno-shebang.sh src/deno-shebang.min.sh src/deno-shebang-piped.sh src/deno-shebang-piped.min.sh
 	@sed -E "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" -i src/deno-shebang*.sh

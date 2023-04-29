@@ -1,16 +1,12 @@
 {
   "lint": {
-    "files": {
-      "exclude": [
-        ".*/"
-      ]
-    }
+    "exclude": [
+      ".*/"
+    ]
   },
   "format": {
-    "files": {
-      "exclude": [
-        ".*/"
-      ]
-    }
+    "exclude": [
+      ".*/"
+    ]
   }
 }
