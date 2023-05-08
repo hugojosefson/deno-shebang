@@ -48,7 +48,7 @@ ensure_command_installed() {
   fi
 }
 
-DENO_VERSION_RANGE_URL_ENCODED="$(echo "${DENO_VERSION_RANGE}" | tr -d '\n' | od -An -tx1 | tr ' ' % | tr -d '\n')"
+DENO_VERSION_RANGE_URL_ENCODED="$(printf '%s' "${DENO_VERSION_RANGE}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')"
 DEFAULT_DENO="$(command -v deno || true)"
 
 get_tmp_dir() {
