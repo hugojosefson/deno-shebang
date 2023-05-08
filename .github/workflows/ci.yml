@@ -19,15 +19,18 @@ jobs:
           echo "deno-version=$(cat .deno-version)" >> "${GITHUB_OUTPUT}"
 
   make:
-    runs-on: ubuntu-latest
+    runs-on: "${{ matrix.os }}-latest"
     needs: meta
-    name: make ${{ matrix.target }} w/ deno ${{ matrix.deno-version }}
+    name: "${{ matrix.os }}: make ${{ matrix.target }} w/ deno ${{ matrix.deno-version }}"
 
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - "ubuntu"
+          - "macos"
         target:
-          - "all"
+          - "clean all"
           - "test"
           - "docker-test"
           - "docker-output-test"
@@ -38,6 +41,12 @@ jobs:
         exclude:
           - target: "docker-output-test"
             deno-version: "1.0.0"
+          - os: "macos"
+            target: "clean all"
+          - os: "macos"
+            target: "docker-test"
+          - os: "macos"
+            target: "docker-output-test"
     steps:
       - uses: actions/checkout@v3
 
@@ -50,16 +59,25 @@ jobs:
         run: make ${{ matrix.target }}
 
   make-from-scratch:
-    runs-on: ubuntu-latest
-    name: make ${{ matrix.target }} w/o deno
+    runs-on: "${{ matrix.os }}-latest"
+    name: "${{ matrix.os }}: make ${{ matrix.target }} w/o deno"
 
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - "ubuntu"
+          - "macos"
         target:
-          - "all"
+          - "clean all"
           - "test"
           - "docker-test"
+        exclude:
+          - os: "macos"
+            target: "clean all"
+          - os: "macos"
+            target: "docker-test"
+
     steps:
       - uses: actions/checkout@v3
 
