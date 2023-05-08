@@ -71,6 +71,9 @@ docker-output-test: ./test/output.test.ts example example.min example.ts example
 update-version-range: .deno-version src/deno-shebang.sh src/deno-shebang.min.sh src/deno-shebang-piped.sh src/deno-shebang-piped.min.sh
 	@sed -E "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" -i src/deno-shebang*.sh
 
+udd:
+	@deno run --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd/main.ts $$(fd '\.ts$$')
+
 maxify:
 	@sed -E 's|;|\n|g' -i src/*.min.sh                                    # Split lines
 
@@ -80,4 +83,4 @@ minify:
 	@sed -zE 's|;$$||' -i src/*.min.sh                                    # Remove trailing semicolon
 	@sed -zE 's|\n*$$|\n|' -i src/*.min.sh                                # Ensure exactly 1 newline at end of file
 
-.PHONY: all clean test docker-test docker-output-test update-version-range .deno-version maxify minify
+.PHONY: all clean test docker-test docker-output-test update-version-range udd .deno-version maxify minify

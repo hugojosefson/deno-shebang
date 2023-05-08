@@ -101,7 +101,7 @@ ensure_deno_installed
 
 exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
 //*/
-import { readAll } from "https://deno.land/std@0.185.0/streams/read_all.ts";
+import { readAll } from "https://deno.land/std@0.186.0/streams/read_all.ts";
 
 console.log(
   `This 🦕 is deno ${Deno.version.deno}, called with args:\n${
