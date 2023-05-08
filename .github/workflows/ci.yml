@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  push:
+    branches: "main"
+
+  pull_request:
+    branches: "*"
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      deno-version: ${{ steps.meta.outputs.deno-version }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: meta
+        run: |
+          echo "deno-version=$(cat .deno-version)" >> "${GITHUB_OUTPUT}"
+
+  make:
+    runs-on: ubuntu-latest
+    needs: meta
+    name: make ${{ matrix.target }} w/ deno ${{ matrix.deno-version }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - "all"
+          - "test"
+          - "docker-test"
+          - "docker-output-test"
+        deno-version:
+          - "1.0.0"
+          - "${{ needs.meta.outputs.deno-version }}"
+          - "^1"
+        exclude:
+          - target: "docker-output-test"
+            deno-version: "1.0.0"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup deno ${{ matrix.deno-version }}
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno-version }}
+
+      - name: make ${{ matrix.target }}
+        run: make ${{ matrix.target }}
+
+  make-from-scratch:
+    runs-on: ubuntu-latest
+    name: make ${{ matrix.target }} w/o deno
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - "all"
+          - "test"
+          - "docker-test"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: delete any deno binaries on PATH
+        run: |
+          set -e
+
+          delete_next_deno() {
+            deno_path="$(command -v deno)"
+            if [ -z "$deno_path" ]; then
+              return 1
+            fi
+            if ! [ -x "$deno_path" ]; then
+              return 1
+            fi
+            echo "deleting $deno_path"
+            rm -f "$deno_path"
+          }
+
+          while delete_next_deno; do
+            :
+          done
+
+          ! deno --version
+
+      - name: make ${{ matrix.target }}
+        run: make ${{ matrix.target }}

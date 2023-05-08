@@ -1,4 +1,5 @@
 /.*/
+!/.github/
 /*.log
 .*.swp
 /test/import-test.sh
