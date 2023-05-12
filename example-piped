@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.33.2"
+DENO_VERSION_RANGE="^1.33.3"
 DENO_RUN_ARGS="--quiet"
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -111,7 +111,7 @@ ensure_deno_installed
 is_run_from_file && exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
 exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
 //*/
-import { readAll } from "https://deno.land/std@0.186.0/streams/read_all.ts";
+import { readAll } from "https://deno.land/std@0.187.0/streams/read_all.ts";
 
 console.log(
   `This 🦕 is deno ${Deno.version.deno}, called with args:\n${
