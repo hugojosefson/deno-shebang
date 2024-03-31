@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.33.4"
+DENO_VERSION_RANGE="^1.42.0"
 DENO_RUN_ARGS="--quiet"
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -101,7 +101,7 @@ ensure_deno_installed
 
 exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
 //*/
-import { readAll } from "https://deno.land/std@0.188.0/streams/read_all.ts";
+import { readAll } from "https://deno.land/std@0.221.0/io/read_all.ts";
 
 console.log(
   `This 🦕 is deno ${Deno.version.deno}, called with args:\n${
@@ -109,7 +109,7 @@ console.log(
   }`,
 );
 
-if (Deno.isatty(Deno.stdin.rid)) {
+if (Deno.stdin.isTerminal()) {
   console.log("Type some text, then on a separate empty line, press ctrl+d.");
 }
 const stdin = new TextDecoder().decode(await readAll(Deno.stdin));
