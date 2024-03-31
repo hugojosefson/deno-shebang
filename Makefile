@@ -59,7 +59,7 @@ test/import-test-piped.sh: src/deno-shebang-piped.min.sh test/import-test.ts
 
 docker-test:
 	docker build -t deno-shebang-test .
-	docker run --rm -i -v "/var/run/docker.sock:/var/run/docker.sock:Z" deno-shebang-test make --always-make all
+	docker run --rm -i -v "$$(./find-docker-sock):/var/run/docker.sock:Z" deno-shebang-test make --always-make all
 	@echo "'make all' was successful inside Docker."
 
 docker-output-test: ./test/output.test.ts example example.min example.ts example.min.ts

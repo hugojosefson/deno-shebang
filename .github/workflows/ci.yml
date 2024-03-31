@@ -8,93 +8,99 @@ on:
     branches: "*"
 
 jobs:
-  meta:
-    runs-on: ubuntu-latest
+  dot_deno_version:
+    runs-on: ubuntu-22.04
     outputs:
-      deno-version: ${{ steps.meta.outputs.deno-version }}
+      value: ${{ steps.dot_deno_version.outputs.value }}
     steps:
-      - uses: actions/checkout@v3
-      - id: meta
+      - uses: actions/checkout@v4
+      - id: dot_deno_version
         run: |
-          echo "deno-version=$(cat .deno-version)" >> "${GITHUB_OUTPUT}"
+          echo "value=$(cat .deno-version)" >> "${GITHUB_OUTPUT}"
 
   make:
-    runs-on: "${{ matrix.os }}-latest"
-    needs: meta
-    name: "${{ matrix.os }}: make ${{ matrix.target }} w/ deno ${{ matrix.deno-version }}"
+    runs-on: "${{ matrix.os }}"
+    needs: dot_deno_version
+    name: "${{ matrix.os }}: make ${{ matrix.target }} w/ deno ${{ matrix.deno_version }}"
 
     strategy:
       fail-fast: false
       matrix:
         os:
-          - "ubuntu"
-          - "macos"
+          - "ubuntu-20.04"
+          - "ubuntu-22.04"
+          - "macos-13"
+          - "macos-14"
         target:
           - "clean all"
           - "test"
           - "docker-test"
           - "docker-output-test"
-        deno-version:
+        deno_version:
+          - "not installed"
           - "1.0.0"
-          - "${{ needs.meta.outputs.deno-version }}"
+          - "${{ needs.dot_deno_version.outputs.value }}"
           - "^1"
         exclude:
-          - target: "docker-output-test"
-            deno-version: "1.0.0"
-          - os: "macos"
-            target: "clean all"
-          - os: "macos"
-            target: "docker-test"
-          - os: "macos"
+          # don't run target "docker-output-test" with deno_version "not installed"
+          - deno_version: "not installed"
             target: "docker-output-test"
-    steps:
-      - uses: actions/checkout@v3
+          # otherwise, run on linux
 
-      - name: setup deno ${{ matrix.deno-version }}
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: ${{ matrix.deno-version }}
+          # deno 1.0.0 was never released for macos
+          - os: "macos-13"
+            deno_version: "1.0.0"
+          - os: "macos-14"
+            deno_version: "1.0.0"
 
-      - name: make ${{ matrix.target }}
-        run: make ${{ matrix.target }}
-
-  make-from-scratch:
-    runs-on: "${{ matrix.os }}-latest"
-    name: "${{ matrix.os }}: make ${{ matrix.target }} w/o deno"
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - "ubuntu"
-          - "macos"
-        target:
-          - "clean all"
-          - "test"
-          - "docker-test"
-        exclude:
-          - os: "macos"
+          # only run target "test" on macos
+          - os: "macos-13"
             target: "clean all"
-          - os: "macos"
+          - os: "macos-13"
             target: "docker-test"
+          - os: "macos-13"
+            target: "docker-output-test"
+          - os: "macos-14"
+            target: "clean all"
+          - os: "macos-14"
+            target: "docker-test"
+          - os: "macos-14"
+            target: "docker-output-test"
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: delete any deno binaries on PATH
+      - id: needs_deno_installed
+        name: Check whether to install deno before
+        shell: bash
         run: |
-          set -e
+          set -euo pipefail
+          IFS=$'\n\t'
+          if [[ "${{ matrix.deno_version }}" == "not installed" ]]; then
+            echo "value=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "value=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+
+      - uses: actions/checkout@v4
+
+      - name: Delete any deno binaries on PATH
+        if: steps.needs_deno_installed.outputs.value == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          IFS=$'\n\t'
 
           delete_next_deno() {
-            deno_path="$(command -v deno)"
-            if [ -z "$deno_path" ]; then
+            local deno_path
+            deno_path="$(command -v deno || :)"
+            if [[ -z "${deno_path}" ]]; then
               return 1
             fi
-            if ! [ -x "$deno_path" ]; then
+            if ! [[ -x "${deno_path}" ]]; then
               return 1
             fi
-            echo "deleting $deno_path"
-            rm -f "$deno_path"
+            echo "deleting ${deno_path}"
+            rm -f "${deno_path}"
           }
 
           while delete_next_deno; do
@@ -103,5 +109,11 @@ jobs:
 
           ! deno --version
 
-      - name: make ${{ matrix.target }}
+      - name: Setup deno ${{ matrix.deno-version }}
+        if: steps.needs_deno_installed.outputs.value == 'true'
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno-version }}
+
+      - name: Run "make ${{ matrix.target }}"
         run: make ${{ matrix.target }}

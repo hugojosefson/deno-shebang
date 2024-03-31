@@ -2,7 +2,7 @@
 /* 2>/dev/null
 
 DENO_VERSION_RANGE="^1.42.0"
-DENO_RUN_ARGS="--quiet"
+DENO_RUN_ARGS=""
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
 set -e
@@ -48,21 +48,39 @@ ensure_command_installed() {
   fi
 }
 
-DENO_VERSION_RANGE_URL_ENCODED="$(printf "%s" "${DENO_VERSION_RANGE}" | xxd -p | tr -d '\n' | sed 's/\(..\)/%\1/g')"
-DEFAULT_DENO="$(command -v deno || true)"
+uri_encode() {
+    str="$1"
+    len=$(printf "%s" "$str" | wc -c)
+    for i in $(seq 1 $len); do
+        char=$(printf "%s" "$str" | cut -c $i)
+        printf '%%%02X' "'$char"
+    done
+}
+
+does_deno_work() {
+  deno="$1"
+  [ -n "${deno}" ] && "${deno}" --version >/dev/null 2>&1
+}
+
+DENO_VERSION_RANGE_URL_ENCODED="$(uri_encode "${DENO_VERSION_RANGE}")"
+DEFAULT_DENO="$(does_deno_work "$(command -v deno)" ||:)"
 
 get_tmp_dir() {
-  tmp_tmp_file="$(mktemp)"
-  rm "${tmp_tmp_file}"
-  dirname "${tmp_tmp_file}"
+  if ! has_command findmnt; then
+    echo "${TMPDIR:-/tmp}"
+    return
+  fi
+  tmpfss="$(findmnt -Ononoexec,noro -ttmpfs -nboAVAIL,TARGET | sort -rn | cut -d\  -f2)"
+  for tmpfs in "${tmpfss}"; do
+    if [ -d "${tmpfs}" ]; then
+      echo "${tmpfs}"
+      return
+    fi
+  done
+  echo "${TMPDIR:-/tmp}"
 }
 
-is_any_deno_installed() {
-  [ -n "${DEFAULT_DENO}" ]
-}
-
-is_deno_version_satisfied() {
-  is_any_deno_installed && [ -x "${DENO_RANGE_DIR}/deno" ] && [ "${DENO_RANGE_DIR}/deno" = "${DEFAULT_DENO}" ] && return
+does_deno_on_path_satisfy() {
   deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.1/mod.ts';Deno.exit(e(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
 }
 
@@ -71,19 +89,16 @@ get_satisfying_version() {
   curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
 }
 
-ensure_deno_installed() {
+ensure_deno_installed_and_first_on_path() {
   DENO_RANGE_DIR="$(get_tmp_dir)/deno-range-${DENO_VERSION_RANGE}/bin"
   mkdir -p "${DENO_RANGE_DIR}"
   export PATH="${DENO_RANGE_DIR}:${PATH}"
-
-  [ -x "${DENO_RANGE_DIR}/deno" ] && return
-  is_any_deno_installed && is_deno_version_satisfied && ([ -L "${DENO_RANGE_DIR}/deno" ] || ln -s "${DEFAULT_DENO}" "${DENO_RANGE_DIR}/deno") && return
+  does_deno_on_path_satisfy && return
 
   DENO_VERSION="$(get_satisfying_version)"
   DENO_INSTALL="$(get_tmp_dir)/deno-${DENO_VERSION}"
-  [ -L "${DENO_RANGE_DIR}/deno" ] || ln -s "${DENO_INSTALL}/bin/deno" "${DENO_RANGE_DIR}/deno"
-
-  is_deno_version_satisfied && return
+  ln -fs "${DENO_INSTALL}/bin/deno" "${DENO_RANGE_DIR}/deno"
+  does_deno_on_path_satisfy && return
 
   ensure_command_installed unzip
   ensure_command_installed curl
@@ -97,9 +112,8 @@ ensure_deno_installed() {
   )
 }
 
-ensure_deno_installed
-
-exec "${DENO_RANGE_DIR}/deno" run ${DENO_RUN_ARGS} "$0" "$@"
+ensure_deno_installed_and_first_on_path
+exec deno run ${DENO_RUN_ARGS} "$0" "$@"
 //*/
 import { readAll } from "https://deno.land/std@0.221.0/io/read_all.ts";
 
