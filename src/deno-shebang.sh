@@ -66,18 +66,19 @@ DENO_VERSION_RANGE_URL_ENCODED="$(uri_encode "${DENO_VERSION_RANGE}")"
 DEFAULT_DENO="$(does_deno_work "$(command -v deno)" ||:)"
 
 get_tmp_dir() {
+  tmp_dir="${TMPDIR:-/tmp}"
   # for each tmpfs filesystem, sort by available space. for each line, read available space and target mount point, filtering out any trailing whitespace from each variable. if the available bytes is at least 150000000, check if the mount point is a directory. if so, use it.
   if has_command findmnt; then
     findmnt -Ononoexec,noro -ttmpfs -nboAVAIL,TARGET | sort -rn | \
     while IFS=$'\n\t ' read -r avail target; do
       if [ "${avail}" -ge 150000000 ] && [ -d "${target}" ]; then
-        printf "%s" "${target}"
-        return
+        tmp_dir="${target}"
+        break
       fi
     done
   fi
 
-  printf "%s" "${TMPDIR:-/tmp}"
+  printf "%s" "${tmp_dir}"
 }
 
 does_deno_on_path_satisfy() {
