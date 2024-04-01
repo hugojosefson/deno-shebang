@@ -118,7 +118,7 @@ ensure_deno_installed_and_first_on_path() {
     if [ "${DENO_RUN_ARGS#*-q}" != "${DENO_RUN_ARGS}" ]; then
       exec 2>/dev/null
     fi
-    curl -fsSL https://deno.land/install.sh | sh -s ${DENO_INSTALL_ARGS} "${DENO_VERSION}" >&2
+    curl -fsSL https://deno.land/install.sh | sh -s ${DENO_INSTALL_ARGS} "${DENO_VERSION}" | grep -iv discord >&2
   )
 }
 
