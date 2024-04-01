@@ -42,10 +42,9 @@ jobs:
           - "${{ needs.dot_deno_version.outputs.value }}"
           - "^1"
         exclude:
-          # don't run target "docker-output-test" with deno_version "not installed"
+          # when deno_version is "not installed", don't run target "docker-output-test"
           - deno_version: "not installed"
             target: "docker-output-test"
-          # otherwise, run on linux
 
           # deno 1.0.0 was never released for macos
           - os: "macos-13"
@@ -53,7 +52,7 @@ jobs:
           - os: "macos-14"
             deno_version: "1.0.0"
 
-          # only run target "test" on macos
+          # on macos, only run target "test"
           - os: "macos-13"
             target: "clean all"
           - os: "macos-13"
