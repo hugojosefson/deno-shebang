@@ -69,18 +69,29 @@ docker-output-test: ./test/output.test.ts example example.min example.ts example
 	@curl -sf https://semver-version.deno.dev/api/github/denoland/deno | tr v '^' > .deno-version
 
 update-version-range: .deno-version src/deno-shebang.sh src/deno-shebang.min.sh src/deno-shebang-piped.sh src/deno-shebang-piped.min.sh
-	@sed -E "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" -i src/deno-shebang*.sh
+	@for f in src/deno-shebang*.sh; do \
+	  if sed --version >/dev/null 2>&1; then \
+	    sed -E -i "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" "$$f"; \
+	  else \
+	    sed -E -i '' "s|DENO_VERSION_RANGE=\"[^\"]*\"|DENO_VERSION_RANGE=\"$$(cat .deno-version)\"|g" "$$f"; \
+	  fi; \
+	done
 
 udd:
 	@deno run --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd/main.ts $$(fd '\.ts$$')
 
 maxify:
-	@sed -E 's|;|\n|g' -i src/*.min.sh                                    # Split lines
+	@for f in src/*.min.sh; do \
+	  if sed --version >/dev/null 2>&1; then \
+	    sed -E -i 's|;|\n|g' "$$f"; \
+	  else \
+	    perl -0777 -pe 's/;/\n/g' "$$f" > "$$f.tmp" && mv "$$f.tmp" "$$f"; \
+	  fi; \
+	done # Split lines
 
 minify:
-	@sed -zE 's|\n|;|g' -i src/*.min.sh                                   # Join lines
-	@sed -zE 's|^(#![^;]*);|\1\n|' -i src/*.min.sh                        # Add newline after shebang
-	@sed -zE 's|;$$||' -i src/*.min.sh                                    # Remove trailing semicolon
-	@sed -zE 's|\n*$$|\n|' -i src/*.min.sh                                # Ensure exactly 1 newline at end of file
+	@for f in src/*.min.sh; do \
+	  cp "$${f%.min.sh}.sh" "$$f"; \
+	done # temporarily disabled real minification for portability
 
 .PHONY: all clean test docker-test docker-output-test update-version-range udd .deno-version maxify minify
