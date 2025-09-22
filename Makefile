@@ -92,6 +92,10 @@ maxify:
 minify:
 	@for f in src/*.min.sh; do \
 	  cp "$${f%.min.sh}.sh" "$$f"; \
-	done # temporarily disabled real minification for portability
+	  head -1 "$$f" > "$${f}.tmp"; \
+	  tail -n +2 "$$f" | tr '\n' ' ' | sed 's/}  /}; /g; s/)" DEFAULT_DENO=/); DEFAULT_DENO=/g; s/ensure_deno_installed_and_first_on_path exec/ensure_deno_installed_and_first_on_path; exec/g' >> "$${f}.tmp"; \
+	  echo >> "$${f}.tmp"; \
+	  mv "$${f}.tmp" "$$f"; \
+	done
 
 .PHONY: all clean test docker-test docker-output-test update-version-range udd .deno-version maxify minify
