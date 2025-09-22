@@ -1,4 +1,4 @@
-import { readAll } from "https://deno.land/std@0.221.0/io/read_all.ts";
+import { readAll } from "jsr:@std/io/read-all";
 
 console.log(
   `This 🦕 is deno ${Deno.version.deno}, called with args:\n${

@@ -17,6 +17,10 @@ needs_sudo() {
 
 get_package_install_command() {
   package_name="$1"
+  if needs_sudo && ! has_command sudo; then
+    # sudo needed but not available, fall back to manual install
+    return
+  fi
   # shellcheck disable=SC2015
   any_sudo="$(needs_sudo && echo sudo || true)"
   if has_command brew; then
@@ -126,7 +130,7 @@ ensure_deno_installed_and_first_on_path
 is_run_from_file && exec deno run ${DENO_RUN_ARGS} "$0" "$@"
 exec deno run ${DENO_RUN_ARGS} - "$@" <<'//🔚'
 //*/
-import { readAll } from "https://deno.land/std@0.221.0/io/read_all.ts";
+import { readAll } from "jsr:@std/io/read-all";
 
 console.log(
   `This 🦕 is deno ${Deno.version.deno}, called with args:\n${

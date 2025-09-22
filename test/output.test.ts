@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno test --allow-run --allow-read --allow-net=semver-version.deno.dev --fail-fast --parallel
-import { run } from "https://deno.land/x/run_simple@2.3.0/mod.ts";
-import { assertEquals } from "https://deno.land/std@0.221.0/assert/assert_equals.ts";
+import { run } from "jsr:@hugojosefson/run-simple";
+import { assertEquals } from "jsr:@std/assert";
 
 async function fetchText(url: string): Promise<string> {
   const res = await fetch(url);
@@ -141,4 +141,46 @@ Deno.test("docker", async (t) => {
       });
     }),
   );
+});
+
+Deno.test("sudo error", async (t) => {
+  const image = "docker.io/alpine";
+  await t.step({
+    name: `docker pull ${image}`,
+    fn: async () => {
+      await run(["docker", "pull", image]);
+    },
+  });
+
+  const script = "./example";
+  const command = [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--user",
+    "1000",
+    "-v",
+    `${Deno.cwd()}:/app:ro`,
+    "-w",
+    "/app",
+    image,
+    script,
+    ...args,
+  ];
+  await t.step({
+    name: command.join(" "),
+    fn: async () => {
+      try {
+        await run(command, { stdin });
+        throw new Error("Expected command to fail");
+      } catch (error) {
+        if (error instanceof Error && 'stderr' in error && 'stdout' in error && 'cmd' in error) {
+          assertEquals((error as any).stderr.trim(), "Please install 'curl' manually, then try again.");
+        } else {
+          throw error;
+        }
+      }
+    },
+  });
 });
