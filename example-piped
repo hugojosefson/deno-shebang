@@ -17,6 +17,10 @@ needs_sudo() {
 
 get_package_install_command() {
   package_name="$1"
+  if needs_sudo && ! has_command sudo; then
+    # sudo needed but not available, fall back to manual install
+    return
+  fi
   # shellcheck disable=SC2015
   any_sudo="$(needs_sudo && echo sudo || true)"
   if has_command brew; then
