@@ -1,7 +1,7 @@
 #!/bin/sh
 /* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.42.0"
+DENO_VERSION_RANGE="^2.5.1"
 DENO_RUN_ARGS=""
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -86,21 +86,31 @@ get_tmp_dir() {
 }
 
 is_run_from_file(){
-  line2="/* 2>/dev/null"
-  me="$(command -v "$0" || true)"
-  ! [ -z $me ] \
-  && [ -r $me ] \
-  && [ "$(head -c 3 "$me")" = '#!/' ] \
-  && (read x && read y && [ "$x" = "#!/bin/sh" ] && [ "$line2" != "${y%"$line2"*}" ]) < "${me}"
+  path="$(command -v "$0" 2>/dev/null || true)" || return 1
+  [ -n "$path" ] && [ -r "$path" ] || return 1
+  # Read first two lines of the resolved script
+  {
+    IFS= read -r first || return 1
+    IFS= read -r second || return 1
+  } < "$path"
+  # Shebang must match expected shell
+  [ "$first" = "#!/bin/sh" ] || return 1
+  # Heuristic: second line must start a JS/TS block comment and optionally contain redirection
+  case "$second" in
+    '/*'* )
+      # Accept if it starts with /* regardless of spacing or trailing tokens
+      return 0 ;;
+  esac
+  return 1
 }
 
 does_deno_on_path_satisfy() {
-  deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.1/mod.ts';Deno.exit(e(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
+  deno eval "import { satisfies as s } from 'https://deno.land/x/semver@v1.4.1/mod.ts'; Deno.exit(s(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
 }
 
 get_satisfying_version() {
   ensure_command_installed curl
-  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
+  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}" 2>/dev/null || echo 2.5.1
 }
 
 ensure_deno_installed_and_first_on_path() {

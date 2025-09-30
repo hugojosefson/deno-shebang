@@ -1,7 +1,7 @@
 #!/bin/sh
-# /* 2>/dev/null
+/* 2>/dev/null
 
-DENO_VERSION_RANGE="^1.42.0"
+DENO_VERSION_RANGE="^2.5.1"
 DENO_RUN_ARGS=""
 # DENO_RUN_ARGS="--quiet --allow-all --unstable"  # <-- depending on what you need
 
@@ -86,12 +86,12 @@ get_tmp_dir() {
 }
 
 does_deno_on_path_satisfy() {
-  deno eval "import{satisfies as e}from'https://deno.land/x/semver@v1.4.1/mod.ts';Deno.exit(e(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
+  deno eval "import { satisfies as s } from 'https://deno.land/x/semver@v1.4.1/mod.ts'; Deno.exit(s(Deno.version.deno,'${DENO_VERSION_RANGE}')?0:1);" >/dev/null 2>&1
 }
 
 get_satisfying_version() {
   ensure_command_installed curl
-  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
+  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}" 2>/dev/null || echo 2.5.1
 }
 
 ensure_deno_installed_and_first_on_path() {
