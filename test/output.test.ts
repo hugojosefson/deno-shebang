@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno test --allow-run --allow-read --allow-net=semver-version.deno.dev --fail-fast --parallel
+#!/usr/bin/env -S deno test --allow-run --allow-read --allow-net=semver.se.deno.net --fail-fast --parallel
 import { run } from "jsr:@hugojosefson/run-simple";
 import { assertEquals } from "jsr:@std/assert";
 
@@ -10,7 +10,7 @@ async function fetchText(url: string): Promise<string> {
 
 async function getLatestVersion(repo: string, versionRange: string) {
   return (await fetchText(
-    `https://semver-version.deno.dev/api/github/${repo}/${
+    `https://semver.se.deno.net/api/github/${repo}/${
       encodeURIComponent(versionRange)
     }`,
   )).replace("v", "");

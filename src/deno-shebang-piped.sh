@@ -100,7 +100,7 @@ does_deno_on_path_satisfy() {
 
 get_satisfying_version() {
   ensure_command_installed curl
-  curl -sSfL "https://semver-version.deno.dev/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
+  curl -sSfL "https://semver.se.deno.net/api/github/denoland/deno/${DENO_VERSION_RANGE_URL_ENCODED}"
 }
 
 ensure_deno_installed_and_first_on_path() {
